@@ -1,0 +1,40 @@
+{
+  "name": "ahorta",
+  "version": "1.0.0",
+  "description": "Plant as a service",
+  "main": "server.js",
+  "scripts": {
+    "start:dev": "nodemon ./server.js",
+    "start": "node ./server.js",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --timeout 30000 test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/worknenjoy/ahorta.git"
+  },
+  "keywords": [
+    "arduino",
+    "iot",
+    "garden",
+    "green"
+  ],
+  "author": "Alexandre Magno",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/worknenjoy/ahorta/issues"
+  },
+  "homepage": "https://github.com/worknenjoy/ahorta#readme",
+  "dependencies": {
+    "assert": "^1.4.1",
+    "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.2",
+    "pg": "^7.7.1",
+    "sendgrid": "^5.2.3",
+    "should": "^13.2.3",
+    "supertest": "^3.3.0"
+  }
+}
