@@ -34,6 +34,7 @@
     "nock": "^10.0.2",
     "pg": "^7.7.1",
     "sendgrid": "^5.2.3",
+    "sendgrid-web": "^0.0.5",
     "should": "^13.2.3",
     "supertest": "^3.3.0"
   }
