@@ -6,11 +6,9 @@ const Notify = require('./mail')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
-}
-
-if (process.env.NODE_ENV !== 'production') {
   app.use(cors())
 }
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('port', (process.env.PORT || 3000))
