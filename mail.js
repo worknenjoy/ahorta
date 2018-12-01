@@ -17,9 +17,14 @@ const Notify = {
             },
           ],
           from: {
-            email: 'sensor@ahorta.com'
+            email: 'alexanmtz@gmail.com'
           },
-          content: `The humidity value is ${value}`
+          content: [
+            {
+              type: 'text/plain',
+              value: `The humidity value is ${value}`,
+            },
+          ]
         },
     })).then(response => {
       // eslint-disable-next-line no-console
@@ -27,10 +32,11 @@ const Notify = {
       // eslint-disable-next-line no-console
       console.log(response.body)
       // eslint-disable-next-line no-console
-      console.log(response.headers)
+      return response
     }).catch(e => {
       // eslint-disable-next-line no-console
       console.log('error', e)
+      return e
     })
   }
 }

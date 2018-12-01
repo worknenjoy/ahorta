@@ -20,10 +20,10 @@ app.get('/sensor', (req, res) => {
     const response = req.query.humidity ? { humidity: req.query.humidity } : {}
     if(response.humidity) {
       Notify.sensor(response.humidity)
-      res.json(response).end()
     }
+    return res.json(response).end()
   }
-  throw new Error('You cannot access this resource')
+  return res.status(500).end()
 })
 
 app.listen(app.get('port'), () => {
