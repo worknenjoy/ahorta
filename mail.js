@@ -21,7 +21,17 @@ const Notify = {
           },
           content: `The humidity value is ${value}`
         },
-    }))
+    })).then(response => {
+      // eslint-disable-next-line no-console
+      console.log(response.statusCode)
+      // eslint-disable-next-line no-console
+      console.log(response.body)
+      // eslint-disable-next-line no-console
+      console.log(response.headers)
+    }).catch(e => {
+      // eslint-disable-next-line no-console
+      console.log('error', e)
+    })
   }
 }
 

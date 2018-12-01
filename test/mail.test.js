@@ -17,19 +17,8 @@ var mock_sg = nock('https://api.sendgrid.com')
 
 describe('SendGrid', () => {
   it('should send an email', done => {
-    Notify.sensor({humidity: 23}).then(response => {
-      // eslint-disable-next-line no-console
-      console.log(response.statusCode)
-      // eslint-disable-next-line no-console
-      console.log(response.body)
-      // eslint-disable-next-line no-console
-      console.log(response.headers)
-      expect(response.statusCode).to.equal(200)
-      done()
-    }).catch((error) => {
-      console.log('error', error)
-      throw new Error('fail')
-      done()
-    })
+    Notify.sensor({humidity: 23})
+    expect(response.statusCode).to.equal(200)
+    done()
   })
 })
