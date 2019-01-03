@@ -1,5 +1,7 @@
 'use strict'
 
+const mail = require('../mail')
+
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
@@ -15,12 +17,11 @@ var mock_sg = nock('https://api.sendgrid.com')
     message: 'success'
   });
 
-describe('SendGrid', done => {
-  it('should send an email', () => {
+describe('SendGrid', () => {
+  it('should send an email', done => {
     Notify.sensor({humidity: 23}).then(response => {
-      console.log('response', response)
-      expect(mail.statusCode).to.equal(200)
+      expect(response[0].body.message).to.equal('success')
       done()
-    })
+    }).catch(e => done(e))
   })
 })

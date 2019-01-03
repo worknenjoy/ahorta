@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.set('port', (process.env.PORT || 3000))
 
 app.get('/sensor', (req, res) => {
-  if(req.query.secret === process.env.SECRET) {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = req.query.humidity ? { humidity: req.query.humidity } : {}
     if(response.humidity) {
       Notify.sensor(response.humidity)

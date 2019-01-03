@@ -13,7 +13,8 @@ if (process.env.NODE_ENV !== 'production') {
 describe('sensor', () => {
   it('should return an empty object', done => {
     agent
-      .get(`/sensor?secret=${process.env.SECRET}`)
+      .get('/sensor')
+      .set('Authorization', `Basic ${process.env.SECRET}`)
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
@@ -25,7 +26,8 @@ describe('sensor', () => {
     })
   it('should return an error when no right secret defined', done => {
     agent
-      .get(`/sensor?secret=1234`)
+      .get('/sensor')
+      .set('Authorization', `Basic 1234`)
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
@@ -35,7 +37,8 @@ describe('sensor', () => {
     })
   it('should return the humidity sent', done => {
     agent
-      .get(`/sensor?secret=${process.env.SECRET}&humidity=23`)
+      .get(`/sensor?humidity=23`)
+      .set('Authorization', `Basic ${process.env.SECRET}`)
       .expect('Content-Type', /json/)
       .expect(200)
       .end((err, res) => {
