@@ -6,7 +6,9 @@
   "scripts": {
     "start:dev": "nodemon ./server.js",
     "start": "node ./server.js",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --timeout 30000 test/*.test.js"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --timeout 30000 test/*.test.js",
+    "migrate": "node_modules/.bin/sequelize db:migrate",
+    "migrate-test": "NODE_ENV=test node_modules/.bin/sequelize db:migrate"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,8 @@
     "nock": "^10.0.2",
     "pg": "^7.7.1",
     "sendgrid-web": "^0.0.5",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0",
     "should": "^13.2.3",
     "supertest": "^3.3.0"
   }

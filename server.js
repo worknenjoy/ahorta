@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const models = require('./models')
 const Notify = require('./mail')
 
 if (process.env.NODE_ENV !== 'production') {
@@ -22,6 +23,33 @@ app.get('/sensor', (req, res) => {
     return res.json(response).end()
   }
   return res.status(500).end()
+})
+
+app.post('/sensor/new', async (req, res) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    const response = res.req.body
+    const deviceId = response.deviceId
+    const name = response.name
+    try {
+      const user = await models.Device.findOne({
+        where: {
+          deviceId
+        }
+      })
+      if(user) {
+        return res.status(200).json(user).end()
+      } else {
+        const newUser = await models.Device.create({
+          deviceId, name
+        })
+        return res.status(201).json(newUser).end()
+      }  
+    } catch (e) {
+      console.log('error', e)
+      return res.status(500).end()
+    }
+  }
+  return res.status(401).end()
 })
 
 app.listen(app.get('port'), () => {
