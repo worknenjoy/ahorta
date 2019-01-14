@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Plant as a service",
   "main": "server.js",
+  "engines": {
+    "node": "11.6.0",
+    "npm": "6.5.0-next.0"
+  },
   "scripts": {
     "start:dev": "nodemon ./server.js",
     "start": "node ./server.js",
