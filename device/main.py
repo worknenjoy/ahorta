@@ -6,27 +6,26 @@ import urequests
 import os
 
 secret = os.environ['SECRET']
+headers = {"Authorization": "Basic %s" % secret}
 
 def get_device():
     device_id = machine.unique_id()
     ssid = ''
     password = ''
     timer = 3600000
-    response = urequests.post("https://ahorta.herokuapp.com/sensor/new", params={"deviceId": device_id}, headers={"Authorization": "Basic %s" % secret})
+    response = urequests.post("https://ahorta.herokuapp.com/sensor/new", json={"deviceId": device_id}, headers=headers)
     device_json = response.json()
     print(device_json)
-    result = device_json.get('result')
-    print(result)
-    ssid = result.ssid
-    password = result.password
-    timer = result.timer
+    ssid = device_json.get('ssid')
+    password = device_json.get('password')
+    timer = device_json.get('timer')
     response.close()
     return { "ssid": ssid, "password": password, "timer": timer }
 
 def send_sensor_values():
     adc = ADC(0)
     adc_value = adc.read()
-    response = urequests.get("https://ahorta.herokuapp.com/sensor?humidity=%d" % adc_value, headers={"Authorization": "Basic %s" % secret})
+    response = urequests.get("https://ahorta.herokuapp.com/sensor?humidity=%d" % adc_value, headers=headers)
     response.close()
 
 sta_if = network.WLAN(network.STA_IF)
