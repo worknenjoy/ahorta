@@ -28,6 +28,7 @@ app.get('/sensor', (req, res) => {
 
 app.post('/sensor/new', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    console.log('requisition body', req.body)
     const response = res.req.body
     const deviceId = response.deviceId
     const name = response.name
