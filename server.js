@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const db = require('./models')
 const bodyParser = require('body-parser')
 const models = require('./models')
 const Notify = require('./mail')
@@ -52,9 +53,10 @@ app.post('/sensor/new', async (req, res) => {
   return res.status(401).end()
 })
 
-app.listen(app.get('port'), () => {
-  // eslint-disable-next-line no-console
-  console.log('Node app is running on port', app.get('port'))
+db.sequelize.sync().then(() => {
+  app.listen(app.get('port'), () => {
+    // eslint-disable-next-line no-console
+    console.log('Node app is running on port', app.get('port'))
+  })
 })
-
 module.exports = app
