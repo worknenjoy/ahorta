@@ -40,7 +40,7 @@ app.post('/sensor', async (req, res) => {
       })
       if(user) {
         if(humidity) {
-          Notify.sensor(humidity)
+          Notify.sensor(user.email, humidity)
         }
         return res.status(200).json(user).end()
       } else {
