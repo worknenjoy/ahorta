@@ -10,13 +10,13 @@ const Notify = {
         color: "#b5c041"
       }
       if(percent < 40) {
-        stateValue.color = "#a6002c"
+        stateValue.color = "#2b4c09"
       }
       if(percent >= 40 && percent < 80) {
         stateValue.color = "#b5c041"
       }
       if(percent >= 80 && percent < 100) {
-        stateValue.color = "#2b4c09"
+        stateValue.color = "#a6002c"
       }
       const msg = {
         to: email,
@@ -25,7 +25,8 @@ const Notify = {
         dynamic_template_data: {
             state: friendlyHumidity,
             color: "white",
-            bgcolor: stateValue.color
+            bgcolor: stateValue.color,
+            absolute: value
         },
         subject: 'We have a new status from your plant'
         //text: `The humidity value is ${value}`,
