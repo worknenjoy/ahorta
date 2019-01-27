@@ -26,10 +26,11 @@ app.get('/sensor', (req, res) => {
   return res.status(500).end()
 })
 
-app.post('/sensor/new', async (req, res) => {
+app.post('/sensor', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = res.req.body
     const deviceId = response.deviceId
+    const humidity = req.query.humidity ? req.query.humidity : 0
     const name = response.name
     try {
       const user = await models.Device.findOne({
@@ -38,11 +39,17 @@ app.post('/sensor/new', async (req, res) => {
         }
       })
       if(user) {
+        if(humidity) {
+          Notify.sensor(humidity)
+        }
         return res.status(200).json(user).end()
       } else {
         const newUser = await models.Device.create({
           deviceId, name
         })
+        if(humidity) {
+          Notify.sensor(humidity)
+        }
         return res.status(201).json(newUser).end()
       }  
     } catch (e) {
