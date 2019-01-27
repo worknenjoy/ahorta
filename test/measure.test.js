@@ -60,7 +60,7 @@ describe('sensor', () => {
     })
   it('should register a new device', done => {
     agent
-      .post(`/sensor/new`)
+      .post(`/sensor`)
       .send({
         deviceId: 'device-alpha-rocks',
         name: 'my new device'
@@ -78,7 +78,7 @@ describe('sensor', () => {
   it('should retrieve a registry if exist already', done => {
     models.Device.create({deviceId: 'foo', name: 'bar'}).then(device => {
       agent
-      .post(`/sensor/new`)
+      .post(`/sensor`)
       .send({
         deviceId: device.deviceId,
         name: device.name

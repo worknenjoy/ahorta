@@ -4,6 +4,7 @@ from machine import ADC
 from machine import Timer
 import urequests
 import os
+import time
 
 secret = ''
 headers = {"Authorization": "Basic %s" % secret}
@@ -22,16 +23,11 @@ if wlan is None:
 print("connection started")
 
 def send_data():
-    ssid = ''
-    password = ''
     timer = 3600000
     response = urequests.post("https://ahorta.herokuapp.com/sensor", json={"deviceId": device_id, "humidity": adc_value}, headers=headers)
     device_json = response.json()
-    print(device_json)
-    ssid = device_json.get('ssid')
-    password = device_json.get('password')
-    timer = device_json.get('timer')
     response.close()
+    timer = device_json.get('timer')
     return { "timer": timer }
 
 data = send_data()
