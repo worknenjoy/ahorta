@@ -19,7 +19,7 @@ var mock_sg = nock('https://api.sendgrid.com')
 
 describe('SendGrid', () => {
   it('should send an email', done => {
-    Notify.sensor({humidity: 23}).then(response => {
+    Notify.sensor('foo@example', 23).then(response => {
       expect(response[0].body.message).to.equal('success')
       done()
     }).catch(e => done(e))
