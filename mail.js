@@ -5,7 +5,7 @@ const Notify = {
     sensor: (email, value) => {
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
       const percent = value / 1024 * 100;
-      const friendlyHumidity = `${Math.round(percent)} of humidity`;
+      const friendlyHumidity = `${Math.round(percent)}% of humidity`;
       let stateValue = {
         color: "#b5c041"
       }
