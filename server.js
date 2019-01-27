@@ -30,7 +30,7 @@ app.post('/sensor', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = res.req.body
     const deviceId = response.deviceId
-    const humidity = req.query.humidity ? req.query.humidity : 0
+    const humidity = response.humidity
     const name = response.name
     try {
       const user = await models.Device.findOne({
