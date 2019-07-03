@@ -13,5 +13,14 @@ describe('Device', () => {
       done()
     })
   })
+
+  it('should add a new device with timer', done => {
+    models.Device.create({deviceId: 'foo', name: 'bar', timer: 3000}).then(device => {
+      expect(device.deviceId).to.deep.equal('foo')
+      expect(device.name).to.deep.equal('bar')
+      expect(device.timer).to.deep.equal(3000)
+      done()
+    })
+  })
   
 })

@@ -26,6 +26,23 @@ app.get('/sensor', (req, res) => {
   return res.status(500).end()
 })
 
+app.get('/devices', (req, res) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    return models.Device.findAll({
+      order: [
+        ['id', 'DESC']
+      ]
+    }).then(devices => {
+      return res.json(devices).end()
+    }).catch(e => {
+      console.log('error', e)
+      return res.status(500).end()
+    })
+    
+  }
+  return res.status(500).end()
+})
+
 app.post('/sensor', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = res.req.body
