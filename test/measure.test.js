@@ -125,6 +125,33 @@ describe('sensor', () => {
           })
       })
     })
+  it('should update device', done => {
+    agent
+      .post(`/sensor`)
+      .send({
+        deviceId: 'device-alpha-rocks-2',
+        name: 'my new device'
+      })
+      .set('Authorization', `Basic ${process.env.SECRET}`)
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err, res) => {
+        agent
+          .put(`/devices/${res.body.id}`)
+          .send({
+            timer: 7200
+          })
+          .set('Authorization', `Basic ${process.env.SECRET}`)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end((err, res) => {
+            expect(res.statusCode).to.equal(200)
+            expect(res.body).to.exist
+            expect(res.body.timer).to.equal(7200)
+            done()
+          })
+      })
+    })
   it('should retrieve a registry if exist already', done => {
     models.Device.create({deviceId: 'foo', name: 'bar'}).then(device => {
       agent

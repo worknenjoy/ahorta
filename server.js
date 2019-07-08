@@ -58,6 +58,25 @@ app.get('/devices/:id', (req, res) => {
   return res.status(500).end()
 })
 
+app.put('/devices/:id', (req, res) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    return models.Device.update(req.body, {
+        where: {
+          id: req.params.id
+        },
+        returning: true
+      }).then(device => {
+        const deviceData = device[1][0].dataValues
+        return res.json(deviceData).end()
+    }).catch(e => {
+      console.log('error', e)
+      return res.status(500).end()
+    })
+    
+  }
+  return res.status(500).end()
+})
+
 app.post('/sensor', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = res.req.body
