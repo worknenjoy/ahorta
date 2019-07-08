@@ -45,6 +45,19 @@ app.get('/devices', (req, res) => {
   return res.status(500).end()
 })
 
+app.get('/devices/:id', (req, res) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    return models.Device.findById(req.params.id).then(device => {
+      return res.json(device).end()
+    }).catch(e => {
+      console.log('error', e)
+      return res.status(500).end()
+    })
+    
+  }
+  return res.status(500).end()
+})
+
 app.post('/sensor', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = res.req.body
