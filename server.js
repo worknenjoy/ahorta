@@ -34,7 +34,9 @@ app.get('/devices', (req, res) => {
       order: [
         ['id', 'DESC']
       ],
-      include: [models.Reading]
+      include: [{
+        model: models.Reading
+      }]
     }).then(devices => {
       return res.json(devices).end()
     }).catch(e => {
