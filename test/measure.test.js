@@ -33,7 +33,7 @@ describe('sensor', () => {
         expect(res.body).to.deep.equal({})
         done()
       })
-    })
+  })
   it('should return an error when no right secret defined', done => {
     agent
       .get('/sensor')
@@ -44,7 +44,7 @@ describe('sensor', () => {
         expect(res.statusCode).to.equal(500)
         done()
       })
-    })
+  })
   it('should return the humidity sent', done => {
     agent
       .get(`/sensor?humidity=23`)
@@ -57,7 +57,7 @@ describe('sensor', () => {
         expect(res.body).to.deep.equal({humidity: '23'})
         done()
       })
-    })
+  })
   it('should register a new device', done => {
     agent
       .post(`/sensor`)
@@ -74,7 +74,25 @@ describe('sensor', () => {
         expect(res.body.deviceId).to.deep.equal('device-alpha-rocks')
         done()
       })
-    })
+  })
+  it('should add a new device with humidity', done => {
+    agent
+      .post(`/sensor`)
+      .send({
+        deviceId: 'device-alpha-rocks',
+        name: 'my new device',
+        humidity: 50
+      })
+      .set('Authorization', `Basic ${process.env.SECRET}`)
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .end((err, res) => {
+        expect(res.statusCode).to.equal(201)
+        expect(res.body).to.exist
+        expect(res.body.reading.value).to.deep.equal(50)
+        done()
+      })
+  })
   it('should list devices', done => {
     agent
       .post(`/sensor`)
@@ -99,7 +117,7 @@ describe('sensor', () => {
             done()
           })
       })
-    })
+  })
   it('should get device', done => {
     agent
       .post(`/sensor`)
@@ -124,7 +142,7 @@ describe('sensor', () => {
             done()
           })
       })
-    })
+  })
   it('should update device', done => {
     agent
       .post(`/sensor`)
@@ -151,7 +169,7 @@ describe('sensor', () => {
             done()
           })
       })
-    })
+  })
   it('should retrieve a registry if exist already', done => {
     models.Device.create({deviceId: 'foo', name: 'bar'}).then(device => {
       agent

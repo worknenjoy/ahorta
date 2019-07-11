@@ -22,5 +22,14 @@ describe('Device', () => {
       done()
     })
   })
+
+  it('should add a new device and create a humitidy from it', done => {
+    models.Device.create({deviceId: 'foo', name: 'bar', timer: 3000}).then(device => {
+      device.createReading({value: 20}).then(reading => {
+        expect(reading.value).to.equal(20)
+        done()
+      })
+    })
+  })
   
 })

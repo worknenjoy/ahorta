@@ -47,7 +47,9 @@ app.get('/devices', (req, res) => {
 
 app.get('/devices/:id', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    return models.Device.findById(req.params.id).then(device => {
+    return models.Device.findById(req.params.id, {
+      include: [models.Reading]
+    }).then(device => {
       return res.json(device).end()
     }).catch(e => {
       console.log('error', e)
@@ -87,11 +89,14 @@ app.post('/sensor', async (req, res) => {
       const user = await models.Device.findOne({
         where: {
           deviceId
-        }
+        },
+        include: [models.Reading]
       })
       if(user) {
         if(humidity) {
           Notify.sensor(user.email, humidity)
+          const userReading = await newUser.createReading({value: humidity})
+          return res.status(201).json({user, ...{reading: userReading}}).end()
         }
         return res.status(200).json(user).end()
       } else {
@@ -100,6 +105,8 @@ app.post('/sensor', async (req, res) => {
         })
         if(humidity) {
           Notify.sensor(humidity)
+          const userReading = await newUser.createReading({value: humidity})
+          return res.status(201).json({newUser, ...{reading: userReading}}).end()
         }
         return res.status(201).json(newUser).end()
       }  

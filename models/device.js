@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     timer: DataTypes.INTEGER
   }, {});
   Device.associate = function(models) {
-    // associations can be defined here
+    Device.hasMany(models.Reading, { foreignKey: 'DeviceId' })
   };
   return Device;
 };
