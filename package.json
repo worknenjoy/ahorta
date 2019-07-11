@@ -12,6 +12,7 @@
     "start": "node ./server.js",
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --timeout 30000 test/*.test.js",
     "migrate": "node_modules/.bin/sequelize db:migrate",
+    "rollback": "node_modules/.bin/sequelize db:migrate:undo",
     "migrate-test": "NODE_ENV=test node_modules/.bin/sequelize db:migrate",
     "heroku-postbuild": "npm run migrate"
   },
