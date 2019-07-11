@@ -33,6 +33,7 @@ app.get('/devices', (req, res) => {
     return models.Device.findAll({
       order: [
         ['id', 'DESC']
+        [models.Reading, 'id', 'DESC']
       ],
       include: [{
         model: models.Reading
