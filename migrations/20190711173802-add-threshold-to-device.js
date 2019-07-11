@@ -5,7 +5,7 @@ module.exports = {
     return queryInterface.addColumn(
       'Devices',
       'threshold',
-      Sequelize.STRING
+      Sequelize.INTEGER
     );
   },
 
@@ -13,7 +13,7 @@ module.exports = {
     return queryInterface.removeColumn(
       'Devices',
       'threshold',
-      Sequelize.STRING
+      Sequelize.INTEGER
     );
   }
 };
