@@ -32,7 +32,7 @@ app.get('/devices', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     return models.Device.findAll({
       order: [
-        ['id', 'DESC']
+        ['id', 'DESC'],
         [models.Reading, 'id', 'DESC']
       ],
       include: [{
