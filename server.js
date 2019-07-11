@@ -52,6 +52,10 @@ app.get('/devices', (req, res) => {
 app.get('/devices/:id', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     return models.Device.findById(req.params.id, {
+      order: [
+        ['id', 'DESC'],
+        [models.Reading, 'id', 'DESC']
+      ],
       include: [models.Reading]
     }).then(device => {
       return res.json(device).end()
