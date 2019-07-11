@@ -33,7 +33,8 @@ app.get('/devices', (req, res) => {
     return models.Device.findAll({
       order: [
         ['id', 'DESC']
-      ]
+      ],
+      include: [models.Reading]
     }).then(devices => {
       return res.json(devices).end()
     }).catch(e => {
