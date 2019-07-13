@@ -92,6 +92,7 @@ app.post('/sensor', async (req, res) => {
     const response = res.req.body
     const deviceId = response.deviceId
     const humidity = response.humidity
+    const newUserMail = response.email
     const name = response.name
     try {
       const user = await models.Device.findOne({
@@ -103,8 +104,8 @@ app.post('/sensor', async (req, res) => {
       if(user) {
         if(humidity) {
           Notify.sensor(user.email, humidity)
-          const userReading = await user.createReading({value: humidity})
-          return res.status(200).json({user, ...{reading: userReading}}).end()
+          await user.createReading({value: humidity})
+          //return res.status(200).json({user, ...{reading: userReading}}).end()
         }
         return res.status(200).json(user).end()
       } else {
@@ -112,7 +113,7 @@ app.post('/sensor', async (req, res) => {
           deviceId, name
         })
         if(humidity) {
-          Notify.sensor(humidity)
+          Notify.sensor(newUserMail, humidity)
           const userReading = await newUser.createReading({value: humidity})
           return res.status(201).json({newUser, ...{reading: userReading}}).end()
         }

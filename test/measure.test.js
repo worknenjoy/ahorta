@@ -137,7 +137,6 @@ describe('sensor', () => {
           .end((err, res) => {
             expect(res.statusCode).to.equal(200)
             expect(res.body).to.exist
-            console.log('body', res.body)
             expect(res.body.deviceId).to.deep.equal('device-alpha-rocks-2')
             done()
           })
