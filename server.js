@@ -35,6 +35,7 @@ app.get('/devices', (req, res) => {
         ['id', 'DESC'],
         [models.Reading, 'id', 'DESC']
       ],
+      limit: 10,
       include: [{
         model: models.Reading
       }]
@@ -104,8 +105,8 @@ app.post('/sensor', async (req, res) => {
       if(user) {
         if(humidity) {
           Notify.sensor(user.email, humidity)
-          await user.createReading({value: humidity})
-          //return res.status(200).json({user, ...{reading: userReading}}).end()
+          const userReading = await user.createReading({value: humidity})
+          return res.status(200).json({user, ...{reading: userReading}}).end()
         }
         return res.status(200).json(user).end()
       } else {
