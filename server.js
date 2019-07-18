@@ -38,9 +38,7 @@ app.get('/devices', async (req, res, next) => {
         ],
         limit: 20,
         include: [{
-          as: 'readings',
-          model: models.Reading,
-          limit: 10
+          model: models.Reading
         }]
       })
       console.log('response from devices', devices);

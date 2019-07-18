@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     threshold: DataTypes.INTEGER
   }, {});
   Device.associate = function(models) {
-    Device.hasMany(models.Reading, { foreignKey: 'DeviceId', as: 'readings' })
+    Device.hasMany(models.Reading, { foreignKey: 'DeviceId' })
   };
   return Device;
 };
