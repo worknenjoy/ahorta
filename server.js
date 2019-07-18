@@ -43,7 +43,7 @@ app.get('/devices', async (req, res, next) => {
         }]
       })
       console.log('response from devices', devices);
-      res.json(devices)
+      return res.json(devices)
     } catch (e) {
       console.log('error', e)
       next(e)
