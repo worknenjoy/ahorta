@@ -31,7 +31,7 @@ app.get('/sensor', (req, res) => {
 app.get('/devices', async (req, res, next) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     try {
-      const device = models.Device.findAll({
+      const devices = models.Device.findAll({
         order: [
           ['id', 'DESC'],
           [models.Reading, 'id', 'DESC']
