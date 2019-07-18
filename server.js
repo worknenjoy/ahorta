@@ -28,26 +28,26 @@ app.get('/sensor', (req, res) => {
   res.status(500).end()
 })
 
-app.get('/devices', (req, res) => {
+app.get('/devices', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    models.Device.findAll({
-      order: [
-        ['id', 'DESC'],
-        [models.Reading, 'id', 'DESC']
-      ],
-      limit: 20,
-      include: [{
-        model: models.Reading,
-        limit: 10
-      }]
-    }).then(devices => {
+    try {
+      const device = models.Device.findAll({
+        order: [
+          ['id', 'DESC'],
+          [models.Reading, 'id', 'DESC']
+        ],
+        limit: 20,
+        include: [{
+          model: models.Reading,
+          limit: 10
+        }]
+      })
       console.log('response from devices', devices);
       res.json(devices).end()
-    }).catch(e => {
+    } catch (e) {
       console.log('error', e)
       res.status(500).end()
-    })
-    
+    }
   }
   res.status(500).end()
 })
