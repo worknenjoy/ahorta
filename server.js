@@ -23,69 +23,71 @@ app.get('/sensor', (req, res) => {
     if(response.humidity) {
       Notify.sensor(response.humidity)
     }
-    return res.json(response).end()
+    res.json(response).end()
   }
-  return res.status(500).end()
+  res.status(500).end()
 })
 
 app.get('/devices', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    return models.Device.findAll({
+    models.Device.findAll({
       order: [
         ['id', 'DESC'],
         [models.Reading, 'id', 'DESC']
       ],
-      limit: 10,
+      limit: 20,
       include: [{
-        model: models.Reading
+        model: models.Reading,
+        limit: 10
       }]
     }).then(devices => {
-      return res.json(devices).end()
+      console.log('response from devices', devices);
+      res.json(devices).end()
     }).catch(e => {
       console.log('error', e)
-      return res.status(500).end()
+      res.status(500).end()
     })
     
   }
-  return res.status(500).end()
+  res.status(500).end()
 })
 
 app.get('/devices/:id', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    return models.Device.findById(req.params.id, {
+    models.Device.findById(req.params.id, {
       order: [
         ['id', 'DESC'],
         [models.Reading, 'id', 'DESC']
       ],
       include: [models.Reading]
     }).then(device => {
-      return res.json(device).end()
+      res.json(device).end()
     }).catch(e => {
       console.log('error', e)
-      return res.status(500).end()
+      res.status(500).end()
     })
     
   }
-  return res.status(500).end()
+  res.status(500).end()
 })
 
 app.put('/devices/:id', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    return models.Device.update(req.body, {
+    models.Device.update(req.body, {
         where: {
           id: req.params.id
         },
         returning: true
       }).then(device => {
         const deviceData = device[1][0].dataValues
-        return res.json(deviceData).end()
+        res.json(deviceData).end()
     }).catch(e => {
       console.log('error', e)
-      return res.status(500).end()
+      res.status(500).end()
     })
     
   }
-  return res.status(500).end()
+  res.status(500).end()
 })
 
 app.post('/sensor', async (req, res) => {
@@ -106,7 +108,7 @@ app.post('/sensor', async (req, res) => {
         if(humidity) {
           Notify.sensor(user.email, humidity)
           const userReading = await user.createReading({value: humidity})
-          return res.status(200).json({user, ...{reading: userReading}}).end()
+          res.status(200).json({user, ...{reading: userReading}}).end()
         }
         return res.status(200).json(user).end()
       } else {
@@ -116,16 +118,16 @@ app.post('/sensor', async (req, res) => {
         if(humidity) {
           Notify.sensor(newUserMail, humidity)
           const userReading = await newUser.createReading({value: humidity})
-          return res.status(201).json({newUser, ...{reading: userReading}}).end()
+          res.status(201).json({newUser, ...{reading: userReading}}).end()
         }
         return res.status(201).json(newUser).end()
       }  
     } catch (e) {
       console.log('error', e)
-      return res.status(500).end()
+      res.status(500).end()
     }
   }
-  return res.status(401).end()
+  res.status(401).end()
 })
 
 db.sequelize.sync().then(() => {
