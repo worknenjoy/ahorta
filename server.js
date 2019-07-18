@@ -28,7 +28,7 @@ app.get('/sensor', (req, res) => {
   res.status(500).end()
 })
 
-app.get('/devices', async (req, res) => {
+app.get('/devices', async (req, res, next) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     try {
       const device = models.Device.findAll({
@@ -43,13 +43,12 @@ app.get('/devices', async (req, res) => {
         }]
       })
       console.log('response from devices', devices);
-      res.json(devices).end()
+      res.json(devices)
     } catch (e) {
       console.log('error', e)
-      res.status(500).end()
+      next(e)
     }
   }
-  res.status(500).end()
 })
 
 app.get('/devices/:id', (req, res) => {
