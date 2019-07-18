@@ -45,24 +45,24 @@ app.get('/devices', async (req, res, next) => {
       return res.json(devices)
     } catch (e) {
       console.log('error', e)
-      next(e)
+      return res.status(500).end()
     }
   }
 })
 
 app.get('/devices/:id', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    models.Device.findById(req.params.id, {
+    return models.Device.findById(req.params.id, {
       order: [
         ['id', 'DESC'],
         [models.Reading, 'id', 'DESC']
       ],
       include: [models.Reading]
     }).then(device => {
-      res.json(device).end()
+      return res.json(device).end()
     }).catch(e => {
       console.log('error', e)
-      res.status(500).end()
+      return res.status(500).end()
     })
     
   }
@@ -71,17 +71,17 @@ app.get('/devices/:id', (req, res) => {
 
 app.put('/devices/:id', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    models.Device.update(req.body, {
+    return models.Device.update(req.body, {
         where: {
           id: req.params.id
         },
         returning: true
       }).then(device => {
         const deviceData = device[1][0].dataValues
-        res.json(deviceData).end()
+        return res.json(deviceData).end()
     }).catch(e => {
       console.log('error', e)
-      res.status(500).end()
+      return res.status(500).end()
     })
     
   }
@@ -106,7 +106,7 @@ app.post('/sensor', async (req, res) => {
         if(humidity) {
           Notify.sensor(user.email, humidity)
           const userReading = await user.createReading({value: humidity})
-          res.status(200).json({user, ...{reading: userReading}}).end()
+          return res.status(200).json({user, ...{reading: userReading}}).end()
         }
         return res.status(200).json(user).end()
       } else {
@@ -116,13 +116,13 @@ app.post('/sensor', async (req, res) => {
         if(humidity) {
           Notify.sensor(newUserMail, humidity)
           const userReading = await newUser.createReading({value: humidity})
-          res.status(201).json({newUser, ...{reading: userReading}}).end()
+          return res.status(201).json({newUser, ...{reading: userReading}}).end()
         }
         return res.status(201).json(newUser).end()
       }  
     } catch (e) {
       console.log('error', e)
-      res.status(500).end()
+      return res.status(500).end()
     }
   }
   res.status(401).end()
