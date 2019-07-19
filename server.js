@@ -8,10 +8,11 @@ const Notify = require('./mail')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
+  app.use(cors())
 }
 
-app.use(cors())
-app.options('localhost:3000', cors());
+//app.use(cors())
+//app.options('localhost:3000', cors());
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -125,7 +126,8 @@ app.post('/sensor', async (req, res) => {
       return res.status(500).end()
     }
   }
-  res.status(401).end()
+  return res.status(401).end()
+  //return res.status(200).json({timer: 3600000}).end()
 })
 
 db.sequelize.sync().then(() => {
