@@ -108,7 +108,7 @@ app.post('/sensor', async (req, res) => {
           Notify.sensor(user.email, humidity)
           const userReading = await user.createReading({value: humidity})
           //return res.status(200).json({user, ...{reading: userReading}}).end()
-          return res.status(200).json({timer: 3600000}).end()
+          return res.status(200).json({timer: user.timer}).end()
         }
         return res.status(200).json(user).end()
       } else {
