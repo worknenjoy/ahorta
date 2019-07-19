@@ -90,7 +90,7 @@ app.put('/devices/:id', (req, res) => {
 })
 
 app.post('/sensor', async (req, res) => {
-  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+  /*if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = res.req.body
     const deviceId = response.deviceId
     const humidity = response.humidity
@@ -126,8 +126,9 @@ app.post('/sensor', async (req, res) => {
       return res.status(500).end()
     }
   }
-  return res.status(401).end()
-  //return res.status(200).json({timer: 3600000}).end()
+  return res.status(401).end()*/
+  console.log('posted to sensor')
+  return res.status(200).json({timer: 3600000}).end()
 })
 
 db.sequelize.sync().then(() => {
