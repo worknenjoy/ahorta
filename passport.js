@@ -27,7 +27,6 @@ passport.use(
       callbackURL: process.env.GOOGLE_CALLBACK_URL || '123'
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log('enter on google', accessToken, refreshToken, profile, done)
       process.nextTick(() => {
         const attributes = {
           access_token: accessToken,
