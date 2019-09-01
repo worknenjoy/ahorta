@@ -3,8 +3,14 @@ const app = express()
 const cors = require('cors')
 const db = require('./models')
 const bodyParser = require('body-parser')
+const session = require('express-session')
 const models = require('./models')
 const Notify = require('./mail')
+const passport = require('passport')
+require('./passport')
+const jwt = require('jsonwebtoken')
+
+
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -13,10 +19,16 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(cors())
 //app.options('localhost:3000', cors());
+app.use(session({
+  secret: process.env.SECRET_PHRASE || '1234'
+}))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('port', (process.env.PORT || 3000))
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.get('/sensor', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
@@ -44,6 +56,23 @@ app.get('/devices', async (req, res, next) => {
       })
       console.log('response from devices', devices);
       return res.json(devices)
+    } catch (e) {
+      console.log('error', e)
+      return res.status(500).end()
+    }
+  }
+})
+
+app.get('/users', async (req, res, next) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    try {
+      const users = await models.User.scope('withoutPassword').findAll({
+        order: [
+          ['id', 'DESC']
+        ],
+        limit: 20
+      })
+      return res.json(users)
     } catch (e) {
       console.log('error', e)
       return res.status(500).end()
@@ -95,25 +124,26 @@ app.post('/sensor', async (req, res) => {
     const deviceId = response.deviceId
     const humidity = response.humidity
     const newUserMail = response.email
+    const UserId = response.UserId
     const name = response.name
     try {
-      const user = await models.Device.findOne({
+      const device = await models.Device.findOne({
         where: {
           deviceId
         },
         include: [models.Reading]
       })
-      if(user) {
+      if(device) {
         if(humidity) {
-          Notify.sensor(user.email, humidity)
-          const userReading = await user.createReading({value: humidity})
+          Notify.sensor(device.email, humidity)
+          const userReading = await device.createReading({value: humidity})
           //return res.status(200).json({user, ...{reading: userReading}}).end()
-          return res.status(200).json({timer: user.timer}).end()
+          return res.status(200).json({timer: device.timer}).end()
         }
-        return res.status(200).json(user).end()
+        return res.status(200).json(device).end()
       } else {
         const newUser = await models.Device.create({
-          deviceId, name
+          deviceId, name, UserId
         })
         if(humidity) {
           Notify.sensor(newUserMail, humidity)
@@ -129,6 +159,82 @@ app.post('/sensor', async (req, res) => {
   }
   return res.status(401).end()
 })
+
+app.post('/auth/register', async (req, res) => {
+  models.User.findOne({where: 
+    { email: req.body.email }
+  }).then(user => {
+    if (user && user.dataValues && user.dataValues.email) {
+      res.status(403).send({ error: 'user.exist' })
+      return
+    }
+    models.User.build(req.body)
+      .save()
+      .then(data => {
+        res.send(data)
+      }).catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error)
+        res.send(false)
+      })
+  }).catch(e => {
+    console.log('no user', e)
+  })
+})
+
+app.post('/authorize/local', async (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      res.status(401)
+      res.send({ 'reason': 'Invalid credentials' })
+    }
+    if (!user) {
+      res.status(401).send({ 'reason': 'Invalid credentials' })
+    }
+    else {
+      req.logIn(user, { session: false }, (err) => {
+        if (err) {
+          res.status(500)
+          res.send({ 'error': 'Server error' })
+        }
+        // set authorization header for tests
+        res.set('Authorization', 'Bearer ' + user.token)
+        res.redirect(`${process.env.FRONTEND_HOST}/#/token/${req.user.token}`)
+      })
+    }
+  })(req, res, next)
+})
+
+app.get('/authenticated', async (req, res, next) => {
+  const token = req.headers.authorization.split(' ')[1]
+
+  if (token) {
+    return jwt.verify(token, process.env.SECRET_PHRASE, (err, decoded) => {
+      // the 401 code is for unauthorized status
+      if (err) {
+        return res.status(401).end()
+      }
+
+      const userData = decoded
+      // check if a user exists
+      return userExist(userData).then(user => {
+        return res.send({ authenticated: true, user: user })
+      }).catch(e => {
+        // eslint-disable-next-line no-console
+        console.log('error to sign user')
+        return res.status(401).end()
+      })
+    })
+  }
+  return next()
+})
+
+app.get('/authorize/google', passport.authenticate('google', {scope: ['email'], accessType: 'offline'}))
+app.get('/callback/google', passport.authenticate('google', {
+  successRedirect: '/',
+  failureRedirect: '/signin'
+}))
+
 
 db.sequelize.sync().then(() => {
   app.listen(app.get('port'), () => {

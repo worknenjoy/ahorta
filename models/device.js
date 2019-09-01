@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Device.associate = function(models) {
     Device.hasMany(models.Reading, { foreignKey: 'DeviceId' })
+    Device.belongsTo(models.User)
   };
   return Device;
 };
