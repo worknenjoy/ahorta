@@ -20,7 +20,7 @@ module.exports = {
     return queryInterface.removeColumn(
       'Devices',
       'UserId',
-      Sequelize.STRING
+      Sequelize.INTEGER
     );
   }
 };
