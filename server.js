@@ -86,7 +86,7 @@ app.get('/users', async (req, res, next) => {
 
 app.post('/users', async (req, res, next) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
-    if(!req.body.email && !req.body.password) throw new Error('missing parameters')
+    if(!req.body.email && !req.body.password) res.status(403).send('missing parameters')
     models.User.findOne({where: 
       { email: req.body.email }
     }).then(user => {
@@ -101,7 +101,7 @@ app.post('/users', async (req, res, next) => {
         }).catch(error => {
           // eslint-disable-next-line no-console
           console.log(error)
-          res.send(false)
+          res.status(403).send(error)
         })
     }).catch(e => {
       console.log('no user', e)
