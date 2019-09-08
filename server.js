@@ -84,6 +84,30 @@ app.get('/users', async (req, res, next) => {
   }
 })
 
+app.post('/users', async (req, res, next) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    models.User.findOne({where: 
+      { email: req.body.email }
+    }).then(user => {
+      if (user && user.dataValues && user.dataValues.email) {
+        res.status(403).send({ error: 'user.exist' })
+        return
+      }
+      models.User.build(req.body)
+        .save()
+        .then(data => {
+          res.send(data)
+        }).catch(error => {
+          // eslint-disable-next-line no-console
+          console.log(error)
+          res.send(false)
+        })
+    }).catch(e => {
+      console.log('no user', e)
+    })
+  }
+})
+
 app.get('/devices/:id', (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     return models.Device.findById(req.params.id, {
