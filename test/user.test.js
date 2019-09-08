@@ -36,6 +36,29 @@ describe("Users", () => {
     })
   })
 
+  describe('User', () => {
+    it('should update', (done) => {
+      agent
+        .post('/auth/register')
+        .send({email: 'test_update@gmail.com', password: 'teste'})
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .end((err, user) => {
+          agent
+            .put(`/users/${user.body.id}`)
+            .send({name: 'Jonh Doe'})
+            .set('Authorization', `Basic ${process.env.SECRET}`)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end((err, res) => {
+              expect(res.statusCode).to.equal(200);
+              expect(res.body).to.exist;
+              done();
+            })
+        })
+    })
+  })
+
   describe('register User', () => {
     it('should register', (done) => {
       agent

@@ -100,6 +100,22 @@ app.get('/users/:id', async (req, res, next) => {
   }
 })
 
+app.put('/users/:id', async (req, res, next) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    try {
+      const user = await models.User.update(req.body, {
+        where: {
+          id: req.params.id
+        }
+      })
+      return res.json(user)
+    } catch (e) {
+      console.log('error', e)
+      return res.status(404).end()
+    }
+  }
+})
+
 app.post('/users', async (req, res, next) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     if(!req.body.email && !req.body.password) res.status(403).send('missing parameters')
