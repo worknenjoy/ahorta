@@ -86,6 +86,7 @@ app.get('/users', async (req, res, next) => {
 
 app.post('/users', async (req, res, next) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    if(!req.body.email && !req.body.password) throw new Error('missing parameters')
     models.User.findOne({where: 
       { email: req.body.email }
     }).then(user => {
