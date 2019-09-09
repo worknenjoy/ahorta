@@ -116,7 +116,7 @@ app.put('/users/:id', async (req, res, next) => {
   }
 })
 
-app.post('/users', async (req, res, next) => {
+app.post('/users', (req, res, next) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     if(!req.body.email && !req.body.password) res.status(403).send('missing parameters')
     models.User.findOne({where: 
@@ -221,7 +221,7 @@ app.post('/sensor', async (req, res) => {
   return res.status(401).end()
 })
 
-app.post('/auth/register', async (req, res) => {
+app.post('/auth/register', (req, res) => {
   models.User.findOne({where: 
     { email: req.body.email }
   }).then(user => {
@@ -243,7 +243,7 @@ app.post('/auth/register', async (req, res) => {
   })
 })
 
-app.post('/authorize/local', async (req, res, next) => {
+app.post('/authorize/local', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       res.status(401)
@@ -266,7 +266,7 @@ app.post('/authorize/local', async (req, res, next) => {
   })(req, res, next)
 })
 
-app.get('/authenticated', async (req, res, next) => {
+app.get('/authenticated', (req, res, next) => {
   const token = req.headers.authorization.split(' ')[1]
 
   if (token) {
