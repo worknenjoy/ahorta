@@ -29,7 +29,7 @@ app.use(session({
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.set('port', (process.env.PORT || 3000))
+app.set('port', (process.env.PORT || app.get('port') || 3000))
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -54,9 +54,14 @@ app.get('/devices', async (req, res, next) => {
           [models.Reading, 'id', 'DESC']
         ],
         limit: 20,
-        include: [{
-          model: models.Reading
-        }]
+        include: [
+          {
+            model: models.Reading
+          },
+          {
+            model: models.User
+          }
+        ]
       })
       console.log('response from devices', devices);
       return res.json(devices)
@@ -148,7 +153,7 @@ app.get('/devices/:id', (req, res) => {
         ['id', 'DESC'],
         [models.Reading, 'id', 'DESC']
       ],
-      include: [models.Reading]
+      include: [models.Reading, models.User]
     }).then(device => {
       return res.json(device).end()
     }).catch(e => {
@@ -229,6 +234,7 @@ app.post('/auth/register', (req, res) => {
       res.status(403).send({ error: 'user.exist' })
       return
     }
+    req.body.password = models.User.generateHash(req.body.password)
     models.User.build(req.body)
       .save()
       .then(data => {
@@ -236,49 +242,47 @@ app.post('/auth/register', (req, res) => {
       }).catch(error => {
         // eslint-disable-next-line no-console
         console.log(error)
-        res.send(false)
+        res.status(401).send(error)
       })
   }).catch(e => {
     console.log('no user', e)
+    res.status(401).send(error)
   })
 })
 
 app.post('/authorize/local', (req, res, next) => {
   passport.authenticate('local', (err, user, info) => {
     if (err) {
-      res.status(401)
-      res.send({ 'reason': 'Invalid credentials' })
+      return res.status(401).send({ 'reason': 'Invalid credentials' })
     }
     if (!user) {
-      res.status(401).send({ 'reason': 'Invalid credentials' })
+      return res.status(401).send({ 'reason': 'Invalid credentials' })
     }
     else {
       req.logIn(user, { session: false }, (err) => {
         if (err) {
-          res.status(500)
-          res.send({ 'error': 'Server error' })
+          return res.status(500).send({ 'error': 'Server error' })
         }
-        // set authorization header for tests
-        res.set('Authorization', 'Bearer ' + user.token)
-        res.redirect(`${process.env.FRONTEND_HOST}/#/token/${req.user.token}`)
+        res.set('Authorization', 'Bearer ' + user.token).status(200).json({token: user.token})
       })
     }
   })(req, res, next)
 })
 
 app.get('/authenticated', (req, res, next) => {
-  const token = req.headers.authorization.split(' ')[1]
+  const token = req.headers.authorization && req.headers.authorization.split(' ')[1]
 
   if (token) {
-    return jwt.verify(token, process.env.SECRET_PHRASE, (err, decoded) => {
+    return jwt.verify(token, process.env.SECRET_PHRASE || '123', (err, decoded) => {
       // the 401 code is for unauthorized status
       if (err) {
         return res.status(401).end()
       }
 
       const userData = decoded
+      console.log('userData', userData)
       // check if a user exists
-      return userExist(userData).then(user => {
+      return models.User.findOne({where: {email: userData.email}}).then(user => {
         return res.send({ authenticated: true, user: user })
       }).catch(e => {
         // eslint-disable-next-line no-console

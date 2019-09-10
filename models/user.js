@@ -33,5 +33,12 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   })
+  User.generateHash = (password) => {
+    /* eslint-disable no-sync */
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null)
+  }
+  User.prototype.verifyPassword = (password, databasePassword) => {
+    return bcrypt.compareSync(password, databasePassword)
+  }
   return User
 }

@@ -4,6 +4,7 @@ const LocalStrategy = require('passport-local').Strategy
 const passportJWT = require('passport-jwt')
 const ExtractJWT = passportJWT.ExtractJwt
 const JWTStrategy = passportJWT.Strategy
+const models = require('./models')
 
 const jwt = require('jsonwebtoken')
 
@@ -13,7 +14,7 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((user, done) => {
-  userExist(user).then(user => {
+  models.User.findOne({where: {email: user.email}}).then(user => {
     done(null, user)
   })
 })
@@ -103,7 +104,7 @@ passport.use(
             if (user.verifyPassword(password, user.password)) {
               const token = jwt.sign(
                 { email: user.email },
-                process.env.SECRET_PHRASE
+                process.env.SECRET_PHRASE || '123'
               )
               user.token = token
               return done(null, user)
