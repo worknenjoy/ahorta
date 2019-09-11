@@ -231,7 +231,7 @@ app.post('/auth/register', (req, res) => {
     { email: req.body.email }
   }).then(user => {
     if (user && user.dataValues && user.dataValues.email) {
-      res.status(403).send({ error: 'user.exist' })
+      res.status(403).send({ error: 'This user already exist, please try to login into your account' })
       return
     }
     req.body.password = models.User.generateHash(req.body.password)
