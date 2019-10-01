@@ -197,10 +197,8 @@ app.post('/sensor', async (req, res) => {
         where: {
           deviceId
         },
-        include: [{
-          model: models.Reading,
-          order: [ [ 'createdAt', 'DESC' ]]
-        }]
+        order: [models.Reading, 'id', 'DESC'],
+        include: [ models.Reading ]
       })
       if(device) {
         if(humidity) {
