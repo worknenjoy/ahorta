@@ -205,8 +205,8 @@ app.post('/sensor', async (req, res) => {
       })
       if(device) {
         if(humidity) {
-          console.log('device readings', device.Reading)
-          if(device.Reading && device.Reading.length && humidity === device.Reading[0].value) return res.status(200).json({timer: device.timer}).end()
+          console.log('device readings', device.Readings)
+          if(device.Readings && device.Readings.length && humidity === device.Readings[0].value) return res.status(200).json({timer: device.timer}).end()
           Notify.sensor(device.email, humidity)
           const userReading = await device.createReading({value: humidity})
           //return res.status(200).json({user, ...{reading: userReading}}).end()
