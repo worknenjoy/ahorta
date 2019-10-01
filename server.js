@@ -197,7 +197,10 @@ app.post('/sensor', async (req, res) => {
         where: {
           deviceId
         },
-        order: [models.Reading, 'id', 'DESC'],
+        order: [
+          ['id', 'DESC'],
+          [models.Reading, 'id', 'DESC']
+        ],
         include: [ models.Reading ]
       })
       if(device) {
