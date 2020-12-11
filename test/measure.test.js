@@ -102,7 +102,7 @@ describe('sensor', () => {
         .end((err, res) => {
           expect(res.statusCode).to.equal(201)
           expect(res.body).to.exist
-          expect(res.body.reading.value).to.deep.equal(50)
+          expect(res.body.reading.value).to.deep.equal('50')
           done()
         })
     })

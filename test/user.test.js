@@ -86,7 +86,7 @@ describe("Users", () => {
             .expect(403)
             .end((err, res) => {
               expect(res.statusCode).to.equal(403);
-              expect(res.body.error).to.equal('user.exist');
+              expect(res.body.error).to.equal('This user already exist, please try to login into your account');
               done();
             })
         })

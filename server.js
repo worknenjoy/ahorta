@@ -253,7 +253,7 @@ app.post('/auth/register', (req, res) => {
       })
   }).catch(e => {
     console.log('no user', e)
-    res.status(401).send(error)
+    res.status(401).send(e)
   })
 })
 

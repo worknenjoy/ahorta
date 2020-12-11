@@ -47,7 +47,7 @@ describe('Device', () => {
     Helpers.register(agent).then(user => {
       models.Device.create({deviceId: 'foo', name: 'bar', timer: 3000, UserId: user.body.id}).then(device => {
         device.createReading({value: 20}).then(reading => {
-          expect(reading.value).to.equal(20)
+          expect(reading.value).to.equal('20')
           done()
         })
       })
