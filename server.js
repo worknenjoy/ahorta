@@ -171,7 +171,14 @@ app.put('/devices/:id', (req, res) => {
         where: {
           id: req.params.id
         },
-        include: [models.Reading, models.User],
+        include: [
+          {
+            model: models.Reading
+          },
+          {
+            model: models.User
+          }
+        ],
         returning: true
       }).then(device => {
         const deviceData = device[1][0].dataValues
