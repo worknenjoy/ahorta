@@ -201,8 +201,14 @@ app.delete('/devices/:id/readings', (req, res) => {
       ],
       include: [models.Reading, models.User]
     }).then(device => {
-      return device.removeReadings().then(deviceCleared => {
-        return res.json(deviceCleared).end()
+      console.log(device)
+      models.Reading.destroy({
+        where: {
+          DeviceId: device.id
+        }
+      }).then(readings => {
+        console.log('device cleared', readings)
+        return res.json(device).end()
       })
     }).catch(e => {
       console.log('error', e)
