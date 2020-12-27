@@ -192,6 +192,27 @@ app.put('/devices/:id', (req, res) => {
   res.status(500).end()
 })
 
+app.delete('/devices/:id/readings', (req, res) => {
+  if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
+    return models.Device.findById(req.params.id, {
+      order: [
+        ['id', 'DESC'],
+        [models.Reading, 'id', 'DESC']
+      ],
+      include: [models.Reading, models.User]
+    }).then(device => {
+      return device.removeReadings().then(deviceCleared => {
+        return res.json(deviceCleared).end()
+      })
+    }).catch(e => {
+      console.log('error', e)
+      return res.status(500).end()
+    })
+    
+  }
+  res.status(500).end()
+})
+
 app.post('/sensor', async (req, res) => {
   if(req.headers.authorization === `Basic ${process.env.SECRET}`) {
     const response = res.req.body
