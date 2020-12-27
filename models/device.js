@@ -7,7 +7,9 @@ module.exports = (sequelize, DataTypes) => {
     ssid: DataTypes.STRING,
     password: DataTypes.STRING,
     timer: DataTypes.INTEGER,
-    threshold: DataTypes.INTEGER
+    threshold: DataTypes.INTEGER,
+    minValue: DataTypes.INTEGER,
+    maxValue: DataTypes.INTEGER
   }, {});
   Device.associate = function(models) {
     Device.hasMany(models.Reading, { foreignKey: 'DeviceId' })

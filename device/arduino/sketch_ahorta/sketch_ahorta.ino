@@ -53,7 +53,7 @@ void loop() {
     HTTPClient http;
     http.begin(serverName);
     http.addHeader("Content-Type", "application/json");
-    http.addHeader("Authorization", "secret");
+    http.addHeader("Authorization", "Basic afe346c2n25cen4f9dn917dn287a8e54e5d6");
     int httpResponseCode = http.POST("{\"deviceId\":\"" + DevideId + "\",\"humidity\":\"" + sensorValue + "\"}");
     Serial.println("Response CODE:");
     Serial.println(httpResponseCode);
