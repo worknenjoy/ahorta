@@ -23,6 +23,7 @@ module.exports = {
     "password": null,
     "database": process.env.DATABASE_URL,
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "ssl": true
   }
 }
