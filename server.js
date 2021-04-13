@@ -21,7 +21,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(cors())
 } else {
   app.use(cors({
-    "origin": "https://worknenjoy.github.io"
+    "origin": ["https://worknenjoy.github.io", "https://ahorta.io"]
   }))
 }
 
