@@ -18,10 +18,13 @@ const jwt = require('jsonwebtoken')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
-  //app.use(cors())
+  app.use(cors())
+} else {
+  app.use(cors({
+    "origin": "https://worknenjoy.github.io/"
+  }))
 }
 
-app.use(cors())
 //app.options('localhost:3000', cors());
 app.use(session({
   secret: process.env.SECRET_PHRASE || '1234'
